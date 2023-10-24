@@ -1,0 +1,56 @@
+.cart-page {
+    margin-top: 64px;
+  }
+  
+  .cart-page h1 {
+    padding: 15px !important;
+    font-family: 'Poppins', sans-serif;
+    font-weight: normal;
+    background-color: rgba(0, 0, 255, 0.072) !important;
+  }
+  .cart-page h1 > p {
+    font-size: 15px;
+    margin-top: 10px;
+  }
+  
+  .cart-page .card {
+    padding: 15px !important;
+    height: 200px !important;
+    margin-bottom: 10px !important;
+  }
+  .cart-page .cart-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cart-page .cart-summary {
+    text-align: center;
+    /* margin-top: -140px !important; */
+  }
+  
+  /* CSS to style the plus and minus buttons */
+.cart-page .card .quantity-control {
+    display: flex;
+    align-items: center;
+  }
+  
+  .cart-page .card .quantity-control button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  
+  .cart-page .card .quantity-control button:hover {
+    background-color: #0056b3;
+  }
+  
+  .cart-page .card .quantity-control .quantity {
+    font-size: 18px;
+    margin: 0 10px;
+  }
+  
