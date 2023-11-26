@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Layout from "./../components/Layout/Layout";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { useCart } from "../context/cart"; // Import useCart
+import { useCart } from "../context/cart";
 import toast from "react-hot-toast";
 import "../styles/ProductDetailsStyles.css";
 
@@ -50,8 +50,11 @@ const ProductDetails = () => {
 
   // Handle "Add to Cart" button click
   const handleAddToCart = (product) => {
-    setCart([...cart, product]);
-    localStorage.setItem("cart", JSON.stringify([...cart, product]));
+    // Ensure the quantity is explicitly set to 1
+    const newItem = { ...product, quantity: 1 };
+
+    setCart([...cart, newItem]);
+    localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
     toast.success("Item Added to cart");
   };
 
@@ -82,7 +85,7 @@ const ProductDetails = () => {
           <h6>Category : {product?.category?.name}</h6>
           <button
             className="btn btn-secondary ms-1"
-            onClick={() => handleAddToCart(product)} // Call handleAddToCart with the selected product
+            onClick={() => handleAddToCart(product)}
           >
             ADD TO CART
           </button>
@@ -124,7 +127,7 @@ const ProductDetails = () => {
                   </button>
                   <button
                     className="btn btn-dark ms-1"
-                    onClick={() => handleAddToCart(p)} // Call handleAddToCart with the selected product
+                    onClick={() => handleAddToCart(p)}
                   >
                     ADD TO CART
                   </button>

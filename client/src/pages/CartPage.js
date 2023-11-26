@@ -28,16 +28,21 @@ const CartPage = () => {
     try {
       let myCart = [...cart];
       let index = myCart.findIndex((item) => item._id === pid);
-
+  
       if (index !== -1) {
         myCart[index].quantity = quantity;
-        setCart(myCart);
-        localStorage.setItem("cart", JSON.stringify(myCart));
+      } else {
+        // If item is not in the cart, add it with quantity 1
+        myCart.push({ _id: pid, quantity: Math.max(quantity, 1) });
       }
+  
+      setCart(myCart);
+      localStorage.setItem("cart", JSON.stringify(myCart));
     } catch (error) {
       console.log(error);
     }
   };
+  
 
   // Function to increment the quantity of an item
   const incrementQuantity = (pid) => {
@@ -62,7 +67,8 @@ const CartPage = () => {
     try {
       let total = 0;
       cart?.map((item) => {
-        total = total + item.price * item.quantity;
+        const quantity = typeof item.quantity === 'number' ? item.quantity : 1;
+        total = total + item.price * quantity;
       });
       return total.toLocaleString("en-PH", {
         style: "currency",
@@ -72,6 +78,7 @@ const CartPage = () => {
       console.log(error);
     }
   };
+  
 
   // Function to remove an item from the cart
   const removeCartItem = (pid) => {
@@ -174,7 +181,7 @@ const CartPage = () => {
                       >
                         -
                       </button>
-                      <span className="quantity">{p.quantity}</span>
+                      <span className="quantity">{Math.max(p.quantity, 1)}</span>
                       <button
                         className="btn btn-outline-primary"
                         onClick={() => incrementQuantity(p._id)}
@@ -182,7 +189,7 @@ const CartPage = () => {
                         +
                       </button>
                     </div>
-                    <p>Total: {p.price * p.quantity}</p>
+                    <p>Total: {p.price * Math.max(p.quantity, 1)}</p>
                   </div>
                   <div className="col-md-4 cart-remove-btn">
                     <button

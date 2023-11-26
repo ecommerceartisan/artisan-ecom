@@ -120,7 +120,7 @@ const HomePage = () => {
     <Layout title={"Artisan Ecommerces - Best offers "}>
       {/* Banner image */}
       <img
-        src="/images/banner1.png"
+        src="/images/banner.jpg"
         className="banner-img"
         alt="bannerimage"
         width={"100%"}
@@ -193,18 +193,19 @@ const HomePage = () => {
                       More Details
                     </button>
                     <button
-                      className="btn btn-dark ms-1"
-                      onClick={() => {
-                        setCart([...cart, p]);
-                        localStorage.setItem(
-                          "cart",
-                          JSON.stringify([...cart, p])
-                        );
-                        toast.success("Item Added to cart");
-                      }}
-                    >
-                      ADD TO CART
-                    </button>
+                    className="btn btn-dark ms-1"
+                    onClick={() => {
+                      // Ensure the quantity is explicitly set to 1
+                      const newItem = { ...p, quantity: 1 };
+
+                      setCart([...cart, newItem]);
+                      localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
+                      toast.success("Item Added to cart");
+                    }}
+                  >
+                    ADD TO CART
+                  </button>
+
                   </div>
                 </div>
               </div>
