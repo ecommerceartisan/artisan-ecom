@@ -23,44 +23,42 @@ const CartPage = () => {
   // Initialize the navigation function
   const navigate = useNavigate();
 
-  // Function to update the quantity of an item in the cart
-  const updateCartItemQuantity = (pid, quantity) => {
-    try {
-      let myCart = [...cart];
-      let index = myCart.findIndex((item) => item._id === pid);
-  
-      if (index !== -1) {
-        myCart[index].quantity = quantity;
-      } else {
-        // If item is not in the cart, add it with quantity 1
-        myCart.push({ _id: pid, quantity: Math.max(quantity, 1) });
-      }
-  
-      setCart(myCart);
-      localStorage.setItem("cart", JSON.stringify(myCart));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  
+ // Function to update the quantity of an item in the cart
+const updateCartItemQuantity = (pid, quantity) => {
+  try {
+    let myCart = [...cart];
+    let index = myCart.findIndex((item) => item._id === pid);
 
-  // Function to increment the quantity of an item
-  const incrementQuantity = (pid) => {
-    const item = cart.find((item) => item._id === pid);
-    if (item) {
-      const newQuantity = item.quantity + 1;
-      updateCartItemQuantity(pid, newQuantity);
+    if (index !== -1) {
+      // If item is already in the cart, update the quantity
+      myCart[index].quantity = quantity;
     }
-  };
 
-  // Function to decrement the quantity of an item
-  const decrementQuantity = (pid) => {
-    const item = cart.find((item) => item._id === pid);
-    if (item && item.quantity > 1) {
-      const newQuantity = item.quantity - 1;
-      updateCartItemQuantity(pid, newQuantity);
-    }
-  };
+    setCart(myCart);
+    localStorage.setItem("cart", JSON.stringify(myCart));
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// Function to increment the quantity of an item
+const incrementQuantity = (pid) => {
+  const item = cart.find((item) => item._id === pid);
+  if (item) {
+    const newQuantity = item.quantity + 1;
+    updateCartItemQuantity(pid, newQuantity);
+  }
+};
+
+// Function to decrement the quantity of an item
+const decrementQuantity = (pid) => {
+  const item = cart.find((item) => item._id === pid);
+  if (item && item.quantity > 1) {
+    const newQuantity = item.quantity - 1;
+    updateCartItemQuantity(pid, newQuantity);
+  }
+};
+
 
   // Function to calculate the total price of the items in the cart
   const totalPrice = () => {

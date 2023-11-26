@@ -48,13 +48,32 @@ const ProductDetails = () => {
     }
   };
 
+  // Handle "More Details" button click
+  const handleMoreDetails = (product) => {
+    navigate(`/product/${product.slug}`);
+  };
+
   // Handle "Add to Cart" button click
   const handleAddToCart = (product) => {
     // Ensure the quantity is explicitly set to 1
     const newItem = { ...product, quantity: 1 };
 
-    setCart([...cart, newItem]);
-    localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item._id === product._id);
+
+      if (existingItem) {
+        // If the item already exists, update the quantity
+        existingItem.quantity += 1;
+        localStorage.setItem("cart", JSON.stringify([...prevCart]));
+        return [...prevCart];
+      } else {
+        // If the item does not exist, add it to the cart
+        const newCart = [...prevCart, newItem];
+        localStorage.setItem("cart", JSON.stringify(newCart));
+        return newCart;
+      }
+    });
+
     toast.success("Item Added to cart");
   };
 
@@ -121,7 +140,7 @@ const ProductDetails = () => {
                 <div className="card-name-price">
                   <button
                     className="btn btn-info ms-1"
-                    onClick={() => navigate(`/product/${p.slug}`)}
+                    onClick={() => handleMoreDetails(p)}
                   >
                     More Details
                   </button>

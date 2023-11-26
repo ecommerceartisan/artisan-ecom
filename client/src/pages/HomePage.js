@@ -186,25 +186,42 @@ const HomePage = () => {
                   </p>
                   <div className="card-name-price">
                     {/* Buttons for more details and adding to cart */}
-                    <button
+                                        <button
                       className="btn btn-info ms-1"
                       onClick={() => navigate(`/product/${p.slug}`)}
                     >
                       More Details
                     </button>
                     <button
-                    className="btn btn-dark ms-1"
-                    onClick={() => {
-                      // Ensure the quantity is explicitly set to 1
-                      const newItem = { ...p, quantity: 1 };
+                      className="btn btn-dark ms-1"
+                      onClick={() => {
+                        // Ensure the quantity is explicitly set to 1
+                        const newItem = { ...p, quantity: 1 };
 
-                      setCart([...cart, newItem]);
-                      localStorage.setItem("cart", JSON.stringify([...cart, newItem]));
-                      toast.success("Item Added to cart");
-                    }}
-                  >
-                    ADD TO CART
-                  </button>
+                        // Use a callback function with setCart to ensure the correct cart state
+                        setCart((prevCart) => {
+                          const existingItem = prevCart.find((item) => item._id === p._id);
+
+                          if (existingItem) {
+                            // If the item already exists, update the quantity
+                            existingItem.quantity += 1;
+                            localStorage.setItem("cart", JSON.stringify([...prevCart]));
+                            return [...prevCart];
+                          } else {
+                            // If the item does not exist, add it to the cart
+                            const newCart = [...prevCart, newItem];
+                            localStorage.setItem("cart", JSON.stringify(newCart));
+                            return newCart;
+                          }
+                        });
+
+                        toast.success("Item Added to cart");
+                      }}
+                    >
+                      ADD TO CART
+                    </button>
+
+
 
                   </div>
                 </div>
