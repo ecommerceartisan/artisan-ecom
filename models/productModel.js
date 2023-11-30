@@ -34,6 +34,12 @@ const productSchema = new mongoose.Schema(
     shipping: {
       type: Boolean,
     },
+    comments: [
+      {
+        type: mongoose.ObjectId,
+        ref: "Comment",
+      },
+    ],
   },
   { timestamps: true }
 );
