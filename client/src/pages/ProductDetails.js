@@ -15,6 +15,9 @@ const ProductDetails = () => {
   const [product, setProduct] = useState({});
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [cart, setCart] = useCart(); // Initialize cart using useCart
+  const [commentText, setCommentText] = useState("");
+  const [commentPhoto, setCommentPhoto] = useState(null);
+  const [comments, setComments] = useState([]); // Add state for comments
 
   // Initialize cart with previously stored items from local storage, if any
   useEffect(() => {
@@ -22,9 +25,11 @@ const ProductDetails = () => {
     setCart(storedCart);
   }, []);
 
-  // Fetch product details and related products when the slug parameter changes
+  // Fetch product details, related products, and comments when the slug parameter changes
   useEffect(() => {
-    if (params?.slug) getProduct();
+    if (params?.slug) {
+      getProduct();
+    }
   }, [params?.slug]);
 
   // Get Product Details
@@ -47,6 +52,23 @@ const ProductDetails = () => {
       console.log(error);
     }
   };
+
+  // Fetch comments whenever the product details are set
+useEffect(() => {
+  if (product._id) {
+    getComments();
+  }
+}, [product._id]);
+
+// Get Comments
+const getComments = async () => {
+  try {
+    const { data } = await axios.get(`/api/v1/product/get-comments/${product._id}`);
+    setComments(data?.comments);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   // Handle "More Details" button click
   const handleMoreDetails = (product) => {
@@ -75,6 +97,34 @@ const ProductDetails = () => {
     });
 
     toast.success("Item Added to cart");
+  };
+
+  // Handle "Add Comment" button click
+  const handleAddComment = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("text", commentText);
+      if (commentPhoto) {
+        formData.append("photo", commentPhoto);
+      }
+
+      await axios.post(`/api/v1/product/add-comment/${product._id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // Refresh product details and comments after adding the comment
+      getComments();
+
+      setCommentText(""); // Clear comment text input
+      setCommentPhoto(null); // Clear comment photo input
+
+      toast.success("Comment added successfully");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error adding comment");
+    }
   };
 
   return (
@@ -109,6 +159,45 @@ const ProductDetails = () => {
             ADD TO CART
           </button>
         </div>
+      </div>
+      <hr />
+      <div className="row container comment-section">
+        <h4>Add Comment ➡️</h4>
+        <div className="mb-3">
+          <textarea
+            className="form-control"
+            placeholder="Add your comment..."
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+          ></textarea>
+        </div>
+        <div className="mb-3">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setCommentPhoto(e.target.files[0])}
+          />
+        </div>
+        <button className="btn btn-primary" onClick={handleAddComment}>
+          Add Comment
+        </button>
+      </div>
+      <hr />
+      <div className="row container comment-section">
+        <h4>Comments ➡️</h4>
+        {comments.map((comment) => (
+          <div key={comment._id} className="comment">
+            <p>{comment.user?.name}</p>
+            <p>{comment.text}</p>
+            {comment.photo && (
+              <img
+                src={`/api/v1/product/comment-photo/${comment._id}`}
+                alt="Comment"
+                className="comment-photo"
+              />
+            )}
+          </div>
+        ))}
       </div>
       <hr />
       <div className="row container similar-products">

@@ -1,6 +1,7 @@
 import fs from "fs";
 import productModel from "../models/productModel.js"; // Import the product model
 import Comment from "../models/commentModel.js";
+import CommentModel from "../models/commentModel.js";
 
 export const addCommentController = async (req, res) => {
   try {
@@ -44,6 +45,54 @@ export const addCommentController = async (req, res) => {
       success: false,
       error,
       message: "Error in adding comment",
+    });
+  }
+};
+
+
+// Get comments for a product
+export const getCommentsController = async (req, res) => {
+  try {
+    const comments = await CommentModel
+    .find({ product: req.params.pid })
+    .populate({
+      path: "user",
+      select: "name"
+    });
+    res.status(200).json({
+      success: true,
+      comments,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while getting comments",
+      error: error.message,
+    });
+  }
+};
+
+
+// Get comment photo
+export const getCommentPhotoController = async (req, res) => {
+  try {
+    const comment = await CommentModel.findById(req.params.cid);
+    if (comment.photo && comment.photo.data) {
+      res.set("Content-Type", comment.photo.contentType);
+      return res.send(comment.photo.data);
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Comment photo not found",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while getting comment photo",
+      error: error.message,
     });
   }
 };

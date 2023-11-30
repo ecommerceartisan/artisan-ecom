@@ -16,7 +16,9 @@ import {
   brainTreePaymentController,
 } from "../controller/productController.js";
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
-import { addCommentController } from "../controller/commentController.js";
+import { addCommentController,
+        getCommentsController,
+        getCommentPhotoController } from "../controller/commentController.js";
 import formidable from "express-formidable";
 
 const router = express.Router();
@@ -79,5 +81,8 @@ router.post("/braintree/payment", requireSignIn, brainTreePaymentController);
 
 router.post("/add-comment/:productId", requireSignIn, formidable(), addCommentController);
 
+router.get("/get-comments/:pid", getCommentsController);
 
+// Get comment photo
+router.get("/comment-photo/:cid", getCommentPhotoController);
 export default router;
