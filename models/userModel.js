@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
 
+const securityQuestionsEnum = [
+  "In what city were you born?",
+  "What is the name of your favorite pet?",
+  "What is your mother's maiden name?",
+  "What high school did you attend?",
+  "What was the name of your elementary school?",
+  "What was the make of your first car?",
+  "What was your favorite food as a child?",
+];
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -24,10 +34,19 @@ const userSchema = new mongoose.Schema(
       type: {},
       required: true,
     },
-    answer: {
-      type: String,
-      required: true,
-    },
+    securityQuestions: [
+      {
+        question: {
+          type: String,
+          enum: securityQuestionsEnum,
+          required: true,
+        },
+        answer: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
     role: {
       type: Number,
       default: 0,
@@ -35,5 +54,5 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+export { securityQuestionsEnum };
 export default mongoose.model("users", userSchema);
