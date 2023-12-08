@@ -7,28 +7,34 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
-  //context
+  // context
   const [auth, setAuth] = useAuth();
-  //state
+  // state
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState({
+    buildingHouseNo: "",
+    street: "",
+    barangay: "",
+    city: "",
+    province: "",
+    region: "",
+  });
 
- const navigate = useNavigate();
-  //get user data
-// get user data
-useEffect(() => {
-  if (auth?.user) {
-    const { email, name, phone, address } = auth.user;
-    setName(name);
-    setPhone(phone);
-    setEmail(email);
-    setAddress(address);
-  }
-}, [auth?.user]);
+  const navigate = useNavigate();
 
+  // get user data
+  useEffect(() => {
+    if (auth?.user) {
+      const { email, name, phone, address } = auth.user;
+      setName(name);
+      setPhone(phone);
+      setEmail(email);
+      setAddress(address);
+    }
+  }, [auth?.user]);
 
   // form function
   const handleSubmit = async (e) => {
@@ -41,7 +47,7 @@ useEffect(() => {
         phone,
         address,
       });
-      if (data?.errro) {
+      if (data?.error) {
         toast.error(data?.error);
       } else {
         setAuth({ ...auth, user: data?.updatedUser });
@@ -51,13 +57,13 @@ useEffect(() => {
         localStorage.setItem("auth", JSON.stringify(ls));
         toast.success("Profile Updated Successfully");
         navigate("/dashboard/user");
-        
       }
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
     }
   };
+
   return (
     <Layout title={"Your Profile"}>
       <div className="container-fluid m-3 p-3">
@@ -114,11 +120,76 @@ useEffect(() => {
                 <div className="mb-3">
                   <input
                     type="text"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
+                    value={address.buildingHouseNo}
+                    onChange={(e) =>
+                      setAddress((prev) => ({
+                        ...prev,
+                        buildingHouseNo: e.target.value,
+                      }))
+                    }
                     className="form-control"
                     id="exampleInputEmail1"
-                    placeholder="Enter Your Address"
+                    placeholder="Enter Building/House No."
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    value={address.street}
+                    onChange={(e) =>
+                      setAddress((prev) => ({ ...prev, street: e.target.value }))
+                    }
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    placeholder="Enter Street"
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    value={address.barangay}
+                    onChange={(e) =>
+                      setAddress((prev) => ({ ...prev, barangay: e.target.value }))
+                    }
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    placeholder="Enter Barangay"
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    value={address.city}
+                    onChange={(e) =>
+                      setAddress((prev) => ({ ...prev, city: e.target.value }))
+                    }
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    placeholder="Enter City"
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    value={address.province}
+                    onChange={(e) =>
+                      setAddress((prev) => ({ ...prev, province: e.target.value }))
+                    }
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    placeholder="Enter Province"
+                  />
+                </div>
+                <div className="mb-3">
+                  <input
+                    type="text"
+                    value={address.region}
+                    onChange={(e) =>
+                      setAddress((prev) => ({ ...prev, region: e.target.value }))
+                    }
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    placeholder="Enter Region"
                   />
                 </div>
 

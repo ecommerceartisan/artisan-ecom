@@ -1,5 +1,5 @@
 /* ========================================= */
-/* =========register and login page========= */
+/* ========= Register and Login Page ========= */
 .form-container {
   display: flex;
   align-items: center;
@@ -17,6 +17,7 @@
   width: 300px;
 }
 
+/* Form Title Styles */
 .form-container form .title {
   text-align: center;
   margin-bottom: 15px;
@@ -25,6 +26,7 @@
   font-size: 1.5rem;
 }
 
+/* Input Styles */
 .form-container form input {
   border: none;
   border-bottom: 1px solid #ccc;
@@ -36,6 +38,7 @@
   font-size: 1rem;
 }
 
+/* Button Styles */
 .form-container form button {
   border: none;
   border-radius: 4px;
@@ -51,6 +54,7 @@
   background-color: #333;
 }
 
+/* Forgot Password Button Styles */
 .forgot-btn {
   background-color: transparent;
   border: none;
@@ -62,3 +66,6 @@
 .forgot-btn:hover {
   color: #000;
 }
+
+/* Box around Address */
+/* You can add a box around the address styles here if needed */

@@ -10,7 +10,12 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [phone, setPhone] = useState("");
-    const [address, setAddress] = useState("");
+    const [buildingHouseNo, setBuildingHouseNo] = useState("");
+    const [street, setStreet] = useState("");
+    const [barangay, setBarangay] = useState("");
+    const [city, setCity] = useState("");
+    const [province, setProvince] = useState("");
+    const [region, setRegion] = useState("");
     const [selectedQuestion, setSelectedQuestion] = useState("");
     const [answer, setAnswer] = useState("");
 
@@ -34,7 +39,14 @@ const Register = () => {
                 email,
                 password,
                 phone,
-                address,
+                address: {
+                    buildingHouseNo,
+                    street,
+                    barangay,
+                    city,
+                    province,
+                    region,
+                },
                 securityQuestions: [
                     {
                         question: selectedQuestion,
@@ -55,7 +67,7 @@ const Register = () => {
     };
 
     return (
-        <Layout title={"Registration - Atisan Ecommerce"}>
+        <Layout title={"Registration - Artisan Ecommerce"}>
             <div className="form-container">
                 <h3>REGISTRATION</h3>
                 <form onSubmit={handleSubmit}>
@@ -78,7 +90,6 @@ const Register = () => {
                             className="form-control"
                             placeholder='Enter Email Address'
                             required
-                            autoFocus
                         />
                     </div>
                     <div className="mb-3">
@@ -89,7 +100,6 @@ const Register = () => {
                             className="form-control"
                             placeholder='Enter Password'
                             required
-                            autoFocus
                         />
                     </div>
                     <div className="mb-3">
@@ -100,21 +110,68 @@ const Register = () => {
                             className="form-control"
                             placeholder='Enter Phone Number'
                             required
-                            autoFocus
                         />
                     </div>
                     <div className="mb-3">
                         <input
                             type="text"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
+                            value={buildingHouseNo}
+                            onChange={(e) => setBuildingHouseNo(e.target.value)}
                             className="form-control"
-                            placeholder='Enter Full Address'
+                            placeholder='Enter Building/House No.'
                             required
-                            autoFocus
                         />
                     </div>
-                    {/* Dropdown for security questions */}
+                    <div className="mb-3">
+                        <input
+                            type="text"
+                            value={street}
+                            onChange={(e) => setStreet(e.target.value)}
+                            className="form-control"
+                            placeholder='Enter Street'
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <input
+                            type="text"
+                            value={barangay}
+                            onChange={(e) => setBarangay(e.target.value)}
+                            className="form-control"
+                            placeholder='Enter Barangay'
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <input
+                            type="text"
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
+                            className="form-control"
+                            placeholder='Enter City'
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <input
+                            type="text"
+                            value={province}
+                            onChange={(e) => setProvince(e.target.value)}
+                            className="form-control"
+                            placeholder='Enter Province'
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <input
+                            type="text"
+                            value={region}
+                            onChange={(e) => setRegion(e.target.value)}
+                            className="form-control"
+                            placeholder='Enter Region'
+                            required
+                        />
+                    </div>
                     <div className="mb-3">
                         <label htmlFor="securityQuestion">Select a Security Question</label>
                         <select
@@ -138,14 +195,13 @@ const Register = () => {
                             className="form-control"
                             placeholder='Answer to Security Question'
                             required
-                            autoFocus
                         />
                     </div>
                     <button type="submit" className="btn btn-primary">Sign Up</button>
                 </form>
             </div>
         </Layout>
-    )
+    );
 }
 
 export default Register;

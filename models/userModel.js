@@ -31,9 +31,31 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     address: {
-      type: {},
-      required: true,
-    },
+      buildingHouseNo: {
+        type: String,
+        required: false,
+      },
+      street: {
+        type: String,
+        required: true,
+      },
+      barangay: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      province: {
+        type: String,
+        required: true,
+      },
+      region: {
+        type: String,
+        required: true,
+      },
+    },    
     securityQuestions: [
       {
         question: {

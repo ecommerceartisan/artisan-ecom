@@ -9,58 +9,45 @@ import toast from "react-hot-toast";
 import "../styles/CartStyles.css";
 
 const CartPage = () => {
-  // Access authentication and cart data from context
   const [auth, setAuth] = useAuth();
   const [cart, setCart] = useCart();
-
-  // State for storing the client token and payment instance
   const [clientToken, setClientToken] = useState("");
   const [instance, setInstance] = useState("");
-
-  // State to handle loading state during payment processing
   const [loading, setLoading] = useState(false);
-
-  // Initialize the navigation function
   const navigate = useNavigate();
 
- // Function to update the quantity of an item in the cart
-const updateCartItemQuantity = (pid, quantity) => {
-  try {
-    let myCart = [...cart];
-    let index = myCart.findIndex((item) => item._id === pid);
+  const updateCartItemQuantity = (pid, quantity) => {
+    try {
+      let myCart = [...cart];
+      let index = myCart.findIndex((item) => item._id === pid);
 
-    if (index !== -1) {
-      // If item is already in the cart, update the quantity
-      myCart[index].quantity = quantity;
+      if (index !== -1) {
+        myCart[index].quantity = quantity;
+      }
+
+      setCart(myCart);
+      localStorage.setItem("cart", JSON.stringify(myCart));
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    setCart(myCart);
-    localStorage.setItem("cart", JSON.stringify(myCart));
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const incrementQuantity = (pid) => {
+    const item = cart.find((item) => item._id === pid);
+    if (item) {
+      const newQuantity = item.quantity + 1;
+      updateCartItemQuantity(pid, newQuantity);
+    }
+  };
 
-// Function to increment the quantity of an item
-const incrementQuantity = (pid) => {
-  const item = cart.find((item) => item._id === pid);
-  if (item) {
-    const newQuantity = item.quantity + 1;
-    updateCartItemQuantity(pid, newQuantity);
-  }
-};
+  const decrementQuantity = (pid) => {
+    const item = cart.find((item) => item._id === pid);
+    if (item && item.quantity > 1) {
+      const newQuantity = item.quantity - 1;
+      updateCartItemQuantity(pid, newQuantity);
+    }
+  };
 
-// Function to decrement the quantity of an item
-const decrementQuantity = (pid) => {
-  const item = cart.find((item) => item._id === pid);
-  if (item && item.quantity > 1) {
-    const newQuantity = item.quantity - 1;
-    updateCartItemQuantity(pid, newQuantity);
-  }
-};
-
-
-  // Function to calculate the total price of the items in the cart
   const totalPrice = () => {
     try {
       let total = 0;
@@ -76,9 +63,7 @@ const decrementQuantity = (pid) => {
       console.log(error);
     }
   };
-  
 
-  // Function to remove an item from the cart
   const removeCartItem = (pid) => {
     try {
       let myCart = [...cart];
@@ -91,7 +76,6 @@ const decrementQuantity = (pid) => {
     }
   };
 
-  // Function to get the payment gateway token
   const getToken = async () => {
     try {
       const { data } = await axios.get("/api/v1/product/braintree/token");
@@ -102,19 +86,13 @@ const decrementQuantity = (pid) => {
   };
 
   useEffect(() => {
-    // Fetch the payment gateway token when the component loads
     getToken();
   }, [auth?.token]);
 
-  // Function to handle the payment process
   const handlePayment = async () => {
     try {
       setLoading(true);
-
-      // Request a payment method nonce using the payment instance
       const { nonce } = await instance.requestPaymentMethod();
-
-      // Make a payment using the obtained nonce and cart details
       const { data } = await axios.post("/api/v1/product/braintree/payment", {
         nonce,
         cart,
@@ -122,12 +100,10 @@ const decrementQuantity = (pid) => {
 
       setLoading(false);
 
-      // Clear the cart and navigate to the order page after successful payment
       localStorage.removeItem("cart");
       setCart([]);
       navigate("/dashboard/user/orders");
 
-      // Display a success message
       toast.success("Payment Completed Successfully");
     } catch (error) {
       console.log(error);
@@ -204,19 +180,31 @@ const decrementQuantity = (pid) => {
               <h2>Cart Summary</h2>
               <p>Total | Checkout | Payment</p>
               <hr />
-              <h4>Total : {totalPrice()} </h4>
+              <h4>Total: {totalPrice()}</h4>
+
+              <div className="mb-3">
+                <h4>Current Address</h4>
+                <h5>
+                  {auth?.user?.address && (
+                    <>
+                      {auth.user.address.buildingHouseNo},{" "}
+                      {auth.user.address.street}, {auth.user.address.barangay},{" "}
+                      {auth.user.address.city}, {auth.user.address.province},{" "}
+                      {auth.user.address.region}
+                    </>
+                  )}
+                </h5>
+                <button
+                  className="btn btn-outline-warning"
+                  onClick={() => navigate("/dashboard/user/profile")}
+                >
+                  Update Address
+                </button>
+              </div>
+
               {auth?.user?.address ? (
                 <>
-                  <div className="mb-3">
-                    <h4>Current Address</h4>
-                    <h5>{auth?.user?.address}</h5>
-                    <button
-                      className="btn btn-outline-warning"
-                      onClick={() => navigate("/dashboard/user/profile")}
-                    >
-                      Update Address
-                    </button>
-                  </div>
+                  {/* Other content when the address exists */}
                 </>
               ) : (
                 <div className="mb-3">
@@ -241,6 +229,7 @@ const decrementQuantity = (pid) => {
                   )}
                 </div>
               )}
+
               <div className="mt-2">
                 {!clientToken || !auth?.token || !cart?.length ? (
                   ""
