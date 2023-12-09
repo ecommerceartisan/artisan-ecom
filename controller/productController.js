@@ -22,7 +22,8 @@ export const createProductController = async (req, res) => {
     const { name, description, price, category, quantity, shipping } =
       req.fields;
     const { photo } = req.files;
-    //alidation
+
+    // Validation
     switch (true) {
       case !name:
         return res.status(500).send({ error: "Name is Required" });
@@ -37,15 +38,26 @@ export const createProductController = async (req, res) => {
       case photo && photo.size > 1000000:
         return res
           .status(500)
-          .send({ error: "photo is Required and should be less then 1mb" });
+          .send({ error: "Photo is Required and should be less than 1mb" });
     }
 
-    const products = new productModel({ ...req.fields, slug: slugify(name) });
+    const createdBy = req.user._id; 
+
+    const products = new productModel({
+      ...req.fields,
+      slug: slugify(name),
+      createdBy: createdBy,
+    });
+
     if (photo) {
       products.photo.data = fs.readFileSync(photo.path);
       products.photo.contentType = photo.type;
     }
+
     await products.save();
+    
+
+
     res.status(201).send({
       success: true,
       message: "Product Created Successfully",
@@ -56,7 +68,7 @@ export const createProductController = async (req, res) => {
     res.status(500).send({
       success: false,
       error,
-      message: "Error in crearing product",
+      message: "Error in creating product",
     });
   }
 };
@@ -91,7 +103,8 @@ export const getSingleProductController = async (req, res) => {
     const product = await productModel
       .findOne({ slug: req.params.slug })
       .select("-photo")
-      .populate("category");
+      .populate("category")
+      .populate("createdBy"); // Populate the createdBy field to get user details
     res.status(200).send({
       success: true,
       message: "Single Product Fetched",
@@ -101,7 +114,7 @@ export const getSingleProductController = async (req, res) => {
     console.log(error);
     res.status(500).send({
       success: false,
-      message: "Eror while getitng single product",
+      message: "Error while getting single product",
       error,
     });
   }
@@ -291,7 +304,8 @@ export const realtedProductController = async (req, res) => {
       })
       .select("-photo")
       .limit(3)
-      .populate("category");
+      .populate("category")
+      .populate("createdBy"); // Populate the createdBy field to get user details
     res.status(200).send({
       success: true,
       products,
@@ -300,7 +314,7 @@ export const realtedProductController = async (req, res) => {
     console.log(error);
     res.status(400).send({
       success: false,
-      message: "error while geting related product",
+      message: "Error while getting related product",
       error,
     });
   }

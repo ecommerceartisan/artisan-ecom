@@ -85,4 +85,16 @@ router.get("/get-comments/:pid", getCommentsController);
 
 // Get comment photo
 router.get("/comment-photo/:cid", getCommentPhotoController);
+
+// New route for populating createdBy field
+router.get('/api/v1/product/populate-user/:productId', async (req, res) => {
+  try {
+    const product = await productModel
+      .findById(req.params.productId)
+      .populate('createdBy');
+    res.status(200).json({ product });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 export default router;

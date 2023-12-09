@@ -7,32 +7,27 @@ import toast from "react-hot-toast";
 import "../styles/ProductDetailsStyles.css";
 
 const ProductDetails = () => {
-  // Get the URL parameters using useParams and set up navigation
   const params = useParams();
   const navigate = useNavigate();
 
-  // Initialize state variables
   const [product, setProduct] = useState({});
   const [relatedProducts, setRelatedProducts] = useState([]);
-  const [cart, setCart] = useCart(); // Initialize cart using useCart
+  const [cart, setCart] = useCart();
   const [commentText, setCommentText] = useState("");
   const [commentPhoto, setCommentPhoto] = useState(null);
-  const [comments, setComments] = useState([]); // Add state for comments
+  const [comments, setComments] = useState([]);
 
-  // Initialize cart with previously stored items from local storage, if any
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(storedCart);
   }, []);
 
-  // Fetch product details, related products, and comments when the slug parameter changes
   useEffect(() => {
     if (params?.slug) {
       getProduct();
     }
   }, [params?.slug]);
 
-  // Get Product Details
   const getProduct = async () => {
     try {
       const { data } = await axios.get(`/api/v1/product/get-product/${params.slug}`);
@@ -43,7 +38,6 @@ const ProductDetails = () => {
     }
   };
 
-  // Get Similar Products
   const getSimilarProduct = async (pid, cid) => {
     try {
       const { data } = await axios.get(`/api/v1/product/related-product/${pid}/${cid}`);
@@ -53,43 +47,36 @@ const ProductDetails = () => {
     }
   };
 
-  // Fetch comments whenever the product details are set
-useEffect(() => {
-  if (product._id) {
-    getComments();
-  }
-}, [product._id]);
+  useEffect(() => {
+    if (product._id) {
+      getComments();
+    }
+  }, [product._id]);
 
-// Get Comments
-const getComments = async () => {
-  try {
-    const { data } = await axios.get(`/api/v1/product/get-comments/${product._id}`);
-    setComments(data?.comments);
-  } catch (error) {
-    console.log(error);
-  }
-};
+  const getComments = async () => {
+    try {
+      const { data } = await axios.get(`/api/v1/product/get-comments/${product._id}`);
+      setComments(data?.comments);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  // Handle "More Details" button click
   const handleMoreDetails = (product) => {
     navigate(`/product/${product.slug}`);
   };
 
-  // Handle "Add to Cart" button click
   const handleAddToCart = (product) => {
-    // Ensure the quantity is explicitly set to 1
     const newItem = { ...product, quantity: 1 };
 
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item._id === product._id);
 
       if (existingItem) {
-        // If the item already exists, update the quantity
         existingItem.quantity += 1;
         localStorage.setItem("cart", JSON.stringify([...prevCart]));
         return [...prevCart];
       } else {
-        // If the item does not exist, add it to the cart
         const newCart = [...prevCart, newItem];
         localStorage.setItem("cart", JSON.stringify(newCart));
         return newCart;
@@ -99,7 +86,6 @@ const getComments = async () => {
     toast.success("Item Added to cart");
   };
 
-  // Handle "Add Comment" button click
   const handleAddComment = async () => {
     try {
       const formData = new FormData();
@@ -114,11 +100,10 @@ const getComments = async () => {
         },
       });
 
-      // Refresh product details and comments after adding the comment
       getComments();
 
-      setCommentText(""); // Clear comment text input
-      setCommentPhoto(null); // Clear comment photo input
+      setCommentText("");
+      setCommentPhoto(null);
 
       toast.success("Comment added successfully");
     } catch (error) {
@@ -152,6 +137,8 @@ const getComments = async () => {
             })}
           </h6>
           <h6>Category : {product?.category?.name}</h6>
+          <h6>Seller : {product?.createdBy?.name}</h6>
+          <h6>Seller's Contact : {product?.createdBy?.phone}</h6>
           <button
             className="btn btn-secondary ms-1"
             onClick={() => handleAddToCart(product)}

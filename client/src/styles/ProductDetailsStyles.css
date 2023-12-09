@@ -38,6 +38,20 @@
   color: #777;
 }
 
+.product-details-info button {
+  background-color: #27ae60; /* Set to the same color as the comment button */
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.product-details-info button:hover {
+  background-color: #218c56;
+}
+
 .similar-products {
   margin: 0 auto; /* Centering the .similar-products horizontally */
 }
@@ -95,8 +109,6 @@
   margin-bottom: 10px;
 }
 
-
-
 .comment-section label[for="file-input"] {
   background-color: #3498db;
   color: #fff;
@@ -110,7 +122,6 @@
 .comment-section label[for="file-input"]:hover {
   background-color: #2980b9;
 }
-
 
 .comment-section label {
   background-color: #3498db;
@@ -127,7 +138,7 @@
 }
 
 .comment-section button {
-  background-color: #27ae60;
+  background-color: #27ae60; /* Set to the same color as the comment button */
   color: #fff;
   padding: 10px;
   border: none;

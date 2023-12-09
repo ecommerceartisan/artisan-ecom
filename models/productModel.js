@@ -27,6 +27,11 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    createdBy: {
+      type: mongoose.ObjectId,
+      ref: "users", 
+      required: true,
+    },
     photo: {
       data: Buffer,
       contentType: String,
